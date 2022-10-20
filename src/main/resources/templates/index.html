@@ -1,0 +1,160 @@
+<!-- http://localhost:8086/ -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <title>Product Manager</title>
+    </head>
+
+    <body>
+        <div align="center">
+            <div>
+                <h1>Product Manager</h1>
+                <a href="/new">Create New Product</a> <br />
+                <br />
+            </div>
+
+            <div>
+                <form th:action="@{/page/1}">
+                    <input type="hidden" name="pageSize" th:value="${pageSize}" />
+                    Name Filter: <input
+                        type="text" name="keyword" size="50" th:value="${keyword}" required />
+                    &nbsp; <input type="submit" value="Search" /> &nbsp; <input
+                        type="button" value="Clear" id="btnClear" onclick="clearSearch()" />
+                </form>
+            </div>
+
+            <div>
+                <form th:action="@{/page/1}">
+                    <input type="hidden" name="pageSize" th:value="${pageSize}" />
+                    <input
+                        type="hidden" name="keyword" th:value="${keyword}" />
+                    排序1: <select name="sortField1">
+                        <option value ="id">id</option>
+                        <option value ="name">name</option>
+                        <option value ="brand">brand</option>
+                        <option value ="madein">madein</option>
+                        <option value ="price">price</option>
+                    </select><select name="sortDir1">
+                        <option value ="asc">asc</option>
+                        <option value ="desc">desc</option>
+                    </select>
+                    排序2: <select name="sortField2">
+                        <option value ="">无</option>
+                        <option value ="id">id</option>
+                        <option value ="name">name</option>
+                        <option value ="brand">brand</option>
+                        <option value ="madein">madein</option>
+                        <option value ="price">price</option>
+                    </select><select name="sortDir2">
+                        <option value ="asc">asc</option>
+                        <option value ="desc">desc</option>
+                    </select>
+
+                    &nbsp; <input type="submit" value="Search" /> &nbsp;
+                </form>
+            </div>
+
+            <div>&nbsp;</div>
+
+            <div>
+                <table border="1" cellpadding="10">
+                    <thead>
+                        <tr>
+                            <th>
+                                Product ID
+                            </th>
+                            <th>Name
+                            </th>
+                            <th>Brand
+                            </th>
+                            <th>Made In
+                            </th>
+                            <th>Price
+                            </th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <th:block th:each="product : ${listProducts}">
+                            <tr >
+                                <td th:text="${product.id}">Product ID</td>
+                                <td th:text="${product.name}">Name</td>
+                                <td th:text="${product.brand}">Brand</td>
+                                <td th:text="${product.madein}">Made in</td>
+                                <td th:text="${product.price}">Price</td>
+                                <td><a th:href="@{'/edit/' + ${product.id}}">Edit</a>
+                                    &nbsp;&nbsp;&nbsp; <a th:href="@{'/delete/' + ${product.id}}">Delete</a>
+                                </td>
+                            </tr>
+                        </th:block>
+                    </tbody>
+                </table>
+            </div>
+
+            <div>&nbsp; &nbsp;</div>
+
+            <div>
+
+                总计<span th:text="${totalItems}">99</span>行，当前显示<span th:text="(${currentPage} - 1)*${pageSize} +1">1</span> -
+                <span th:text="(${currentPage} - 1)*${pageSize} +${numberOfElements}">5</span>行&nbsp; &nbsp;每页<select class="form-control pagination" id="pageSizeSelect">
+                    <option th:each="selectedPageSize : ${pageSizes}" th:text="${selectedPageSize}"
+                            th:value="${selectedPageSize}"
+                            th:selected="${selectedPageSize} == ${pageSize}">5</option>
+                </select>行
+                &nbsp; &nbsp; 转到第<select class="form-control pagination" id="pageSelect">
+                    <option th:each="i: ${#numbers.sequence(1, totalPages)}" th:text="${i}"
+                            th:value="${i}"
+                            th:selected="${i} == ${currentPage}">2</option>
+                </select>页，总计<span th:text="${totalPages}">99</span>页 &nbsp; <a href="First.html" th:if="${currentPage > 1}"
+                                                                                th:href="@{'/page/1?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&pageSize=' + ${pageSize}+ ${keyword != null ? '&keyword=' + keyword : ''}}">|&lt;最前页</a>
+                <span th:unless="${currentPage > 1}">|&lt;最前页</span> &nbsp;&nbsp; <a href="Previous.html"
+                                                                                     th:if="${currentPage > 1}"
+                                                                                     th:href="@{'/page/' + ${currentPage - 1} + '?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&pageSize=' + ${pageSize}+ ${keyword != null ? '&keyword=' + keyword : ''}}">&lt;前一页</a>
+                <span th:unless="${currentPage > 1}">&lt;前一页</span> &nbsp;&nbsp;  <a href="Next.html" th:if="${currentPage < totalPages}"
+                                                                                     th:href="@{'/page/' + ${currentPage + 1} + '?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&pageSize=' + ${pageSize}+ ${keyword != null ? '&keyword=' + keyword : ''}}">后一页&gt;</a>
+                <span th:unless="${currentPage < totalPages}">后一页&gt;</span>
+                &nbsp;&nbsp; <a href="Last.html" th:if="${currentPage < totalPages}"
+                                th:href="@{'/page/' + ${totalPages} + '?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&pageSize=' + ${pageSize}+ ${keyword != null ? '&keyword=' + keyword : ''}}">最后页&gt;|</a>
+                <span th:unless="${currentPage < totalPages}">最后页&gt;|</span>
+                &nbsp;&nbsp;
+
+            </div>
+
+
+
+            <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+            <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <script type="text/javascript">
+                            function clearSearch() {
+                                window.location = "/";
+                            }
+            </script>
+            <script type="text/javascript" th:inline="javascript">
+                /*<![CDATA[*/
+                $(document).ready(function () {
+                    changePageSize();
+                    changePage();
+                });
+                function changePageSize() {
+                    $('#pageSizeSelect').change(function (evt) {
+                        window.location.replace("/page/1/?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&pageSize=" + this.value);
+                    });
+
+                }
+                /*]]>*/
+            </script>
+
+            <script th:inline="javascript">
+                function changePage() {
+                    $('#pageSelect').change(function (evt) {
+                        window.location.replace("/page/" + this.value + "/?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&pageSize=" + [[${pageSize}]]);
+                    });
+                }
+            </script>
+
+        </div>
+    </body>
+</html>
