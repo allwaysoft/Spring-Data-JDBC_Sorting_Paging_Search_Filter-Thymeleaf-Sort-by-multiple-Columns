@@ -88,6 +88,8 @@ public class ProductController {
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("sortField1", sortField1);
         model.addAttribute("sortDir1", sortDir1);
+        model.addAttribute("sortField2", sortField2);
+        model.addAttribute("sortDir2", sortDir2);
         model.addAttribute("pageSizes", PAGE_SIZES);
         model.addAttribute("numberOfElements", numberOfElements);
         model.addAttribute("listProducts", listProducts); // next bc of thymeleaf we make the index.html

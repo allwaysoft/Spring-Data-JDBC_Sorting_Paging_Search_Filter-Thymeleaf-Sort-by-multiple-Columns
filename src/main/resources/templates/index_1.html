@@ -11,8 +11,8 @@
     <body>
         <div align="center">
             <div>
-                <h1>产品管理</h1>
-                <a href="/new">添加产品</a> <br />
+                <h1>Product Manager</h1>
+                <a href="/new">Create New Product</a> <br />
                 <br />
             </div>
 
@@ -23,10 +23,10 @@
                     <input id="sortDir1" type="hidden" name="sortDir1" th:value="${sortDir1}" />
                     <input id="sortField2" type="hidden" name="sortField2" th:value="${sortField2}" />
                     <input id="sortDir2" type="hidden" name="sortDir2" th:value="${sortDir2}" />
-                    多字段模糊查询: <input
+                    Name Filter: <input
                         type="text" name="keyword" size="50" th:value="${keyword}" required />
-                    &nbsp; <input type="submit" value="搜索" /> &nbsp; <input
-                        type="button" value="重置" id="btnClear" onclick="clearSearch()" />
+                    &nbsp; <input type="submit" value="Search" /> &nbsp; <input
+                        type="button" value="Clear" id="btnClear" onclick="clearSearch()" />
                 </form>
             </div>
 
@@ -35,7 +35,7 @@
                     <input type="hidden" name="pageSize" th:value="${pageSize}" />
                     <input
                         type="hidden" name="keyword" th:value="${keyword}" />
-                    排序字段：1: <select name="sortField1">
+                    排序1: <select name="sortField1">
                         <option value ="id"  th:selected="${sortField1} == 'id'">id</option>
                         <option value ="name" th:selected="${sortField1} == 'name'">name</option>
                         <option value ="brand" th:selected="${sortField1} == 'brand'">brand</option>
@@ -45,7 +45,7 @@
                         <option value ="asc" th:selected="${sortDir1} == 'asc'">asc</option>
                         <option value ="desc" th:selected="${sortDir1} == 'desc'">desc</option>
                     </select>
-                    2: <select name="sortField2">
+                    排序2: <select name="sortField2">
                         <option value ="">无</option>
                         <option value ="id"  th:selected="${sortField2} == 'id'">id</option>
                         <option value ="name" th:selected="${sortField2} == 'name'">name</option>
@@ -57,7 +57,7 @@
                         <option value ="desc" th:selected="${sortDir2} == 'desc'">desc</option>
                     </select>
 
-                    &nbsp; <input type="submit" value="确定" /> &nbsp;
+                    &nbsp; <input type="submit" value="Search" /> &nbsp;
                 </form>
             </div>
 
@@ -113,33 +113,55 @@
                             th:value="${i}"
                             th:selected="${i} == ${currentPage}">2</option>
                 </select>页，总计<span th:text="${totalPages}">99</span>页 &nbsp; <a href="First.html" th:if="${currentPage > 1}"
-                                                                                th:href="@{'/page/1?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&sortField2=' + ${sortField2}+ '&sortDir2=' + ${sortDir2} + '&pageSize=' + ${pageSize}+ ${keyword != null ? '&keyword=' + keyword : ''}}">|&lt;最前页</a>
+                                                                                th:href="@{'/page/1?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&pageSize=' + ${pageSize}+ ${keyword != null ? '&keyword=' + keyword : ''}}">|&lt;最前页</a>
                 <span th:unless="${currentPage > 1}">|&lt;最前页</span> &nbsp;&nbsp; <a href="Previous.html"
                                                                                      th:if="${currentPage > 1}"
-                                                                                     th:href="@{'/page/' + ${currentPage - 1} + '?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&sortField2=' + ${sortField2}+ '&sortDir2=' + ${sortDir2}+ '&pageSize=' + ${pageSize}+ ${keyword != null ? '&keyword=' + keyword : ''}}">&lt;前一页</a>
+                                                                                     th:href="@{'/page/' + ${currentPage - 1} + '?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&pageSize=' + ${pageSize}+ ${keyword != null ? '&keyword=' + keyword : ''}}">&lt;前一页</a>
                 <span th:unless="${currentPage > 1}">&lt;前一页</span> &nbsp;&nbsp;  <a href="Next.html" th:if="${currentPage < totalPages}"
-                                                                                     th:href="@{'/page/' + ${currentPage + 1} + '?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&sortField2=' + ${sortField2}+ '&sortDir2=' + ${sortDir2}+ '&pageSize=' + ${pageSize}+ ${keyword != null ? '&keyword=' + keyword : ''}}">后一页&gt;</a>
+                                                                                     th:href="@{'/page/' + ${currentPage + 1} + '?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&pageSize=' + ${pageSize}+ ${keyword != null ? '&keyword=' + keyword : ''}}">后一页&gt;</a>
                 <span th:unless="${currentPage < totalPages}">后一页&gt;</span>
                 &nbsp;&nbsp; <a href="Last.html" th:if="${currentPage < totalPages}"
-                                th:href="@{'/page/' + ${totalPages} + '?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&sortField2=' + ${sortField2}+ '&sortDir2=' + ${sortDir2}+ '&pageSize=' + ${pageSize}+ ${keyword != null ? '&keyword=' + keyword : ''}}">最后页&gt;|</a>
+                                th:href="@{'/page/' + ${totalPages} + '?sortField1=' + ${sortField1}+ '&sortDir1=' + ${sortDir1}+ '&pageSize=' + ${pageSize}+ ${keyword != null ? '&keyword=' + keyword : ''}}">最后页&gt;|</a>
                 <span th:unless="${currentPage < totalPages}">最后页&gt;|</span>
                 &nbsp;&nbsp;
 
             </div>
 
+
+
+            <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+            <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
             <script type="text/javascript">
-                function clearSearch() {
-                    window.location = "/";
+                            function clearSearch() {
+                                window.location = "/";
+                            }
+                            document.getElementById("pageSelect").addEventListener("change", function () {
+                                window.location.replace("/page/" + this.value + "/?sortField1=" + document.getElementById('sortField1').value + "&sortDir1=" + document.getElementById('sortDir1').value + "&pageSize=" + document.getElementById('pageSize').value);
+                            });
+            </script>
+            <script  th:inline="javascript">
+                $(document).ready(function () {
+                    changePageSize();
+                    changePage();
+                });
+                function changePageSize() {
+                    $('#pageSizeSelect').change(function (evt) {
+                        window.location.replace("/page/1/?sortField1=id&sortDir1=asc&pageSize=" + this.value);
+                    });
                 }
-                document.getElementById("pageSizeSelect").addEventListener("change", function () {
-                    window.location.replace("/page/1/?sortField1=id&sortDir1=asc&pageSize=" + this.value);
-                });
-                document.getElementById("pageSelect").addEventListener("change", function () {
-                    window.location.replace("/page/" + this.value + "/?sortField1=" + document.getElementById('sortField1').value + "&sortDir1=" + document.getElementById('sortDir1').value + "&pageSize=" + document.getElementById('pageSize').value);
-                });
+
+
+
 
             </script>
 
+            <script th:inline="javascript">
+                function changePage() {
+                    $('#pageSelect').change(function (evt) {
+                        window.location.replace("/page/" + this.value + "/?sortField1=" + document.getElementById('sortField1').value + "&sortDir1=" + document.getElementById('sortDir1').value + "&pageSize=" + document.getElementById('pageSize').value);
+                    });
+                }
+            </script>
         </div>
     </body>
 </html>
